@@ -1,10 +1,11 @@
 const loginRoutes = require('express').Router();
 const crypto = require('crypto');
+const loginValidations = require("../middlewares/loginValidations")
 
 const HTTP_OK_STATUS = 200;
 
 // requisito 3
-loginRoutes.post('/', (req, res) => {
+loginRoutes.post('/', loginValidations, (req, res) => {
 
   // Gera um token aleatório de 16 caracteres
   const token = crypto.randomBytes(8).toString('hex');
