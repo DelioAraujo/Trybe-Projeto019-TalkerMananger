@@ -18,6 +18,24 @@ talkerRoutes.get('/', async (req, res) => {
   res.status(HTTP_OK_STATUS).json(file);
 });
 
+// requisito 8
+talkerRoutes.get('/search', tokenValidation, async (req, res) => {
+  const talkerList = await readFile();
+
+  const { q } = req.query;
+
+  const filteredTalkers = talkerList.filter((talker) =>
+    talker.name.toLowerCase().includes(q.toLowerCase()));
+
+  if (q === undefined) {
+    return res.status(HTTP_OK_STATUS).json(talkerList);
+  }
+  if (q === '') {
+    return res.status(HTTP_OK_STATUS).json(talkerList);
+  }
+  return res.status(HTTP_OK_STATUS).json(filteredTalkers);
+});
+
 // requisito 2
 talkerRoutes.get('/:id', async (req, res) => {
   const { id } = req.params;
@@ -62,7 +80,7 @@ talkerRoutes.put('/:id', talkerValidations, async (req, res) => {
     if (talkerIndex === -1) {
         return res.status(HTTP_NOT_FOUND).json({ message: 'Pessoa palestrante não encontrada' });
     }
-    const updatedTalker = { id: Number(id), 
+    const updatedTalker = { id: Number(id),
         name,
         age,
         talk: {
