@@ -55,4 +55,43 @@ talkerRoutes.post("/", talkerValidations, async (req, res) => {
 
 });
 
+// requisito 6
+talkerRoutes.put('/:id', talkerValidations, async (req, res) => {
+    // pego id na rota
+    const { id } = req.params;
+
+    //pego as informações do corpo
+    const { name, age, talk: { watchedAt, rate } } = req.body;
+
+    //pego a lista completa no arquivo
+    const talkerList = await readFile();
+
+    // confiro qual o index do elemento correspondente ao id fornecido
+    // faço verificação se existe realmente um elemento com o id fornecido e retorno um erro caso negativo
+    const talkerIndex = talkerList.findIndex((person) => person.id === Number(id));
+    if (talkerIndex === -1) {
+        return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
+    }
+
+    //pego as informações recebidas e faço um novo elemento
+    const updatedTalker = {
+        id: Number(id),
+        name,
+        age,
+        talk: {
+            watchedAt,
+            rate,
+        }
+    };
+
+    //substituo o elemento antigo pelo novo usando o index
+    talkerList[talkerIndex] = updatedTalker
+
+    //reescrevo o arquivo com a lista atualizada após a substituição
+    await fs.writeFile(talkFile, JSON.stringify(talkerList));
+
+    // retorno status 200 e o elemento atualizado
+    return res.status(200).json(updatedTalker);
+});
+
 module.exports = talkerRoutes;
