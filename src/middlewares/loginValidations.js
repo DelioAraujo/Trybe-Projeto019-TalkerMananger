@@ -1,9 +1,8 @@
 // requisito 4
 
-
 // Middleware para validar o campo email
 function validateEmail(req, res, next) {
-  const email = req.body.email;
+  const { email } = req.body;
   if (!email) {
     return res.status(400).json({ message: 'O campo "email" é obrigatório' });
   }
@@ -19,7 +18,7 @@ function validateEmail(req, res, next) {
 
 // Middleware para validar o campo password
 function validatePassword(req, res, next) {
-  const password = req.body.password;
+  const { password } = req.body;
   if (!password) {
     return res.status(400).json({ message: 'O campo "password" é obrigatório' });
   }
